@@ -14,28 +14,17 @@ export const POST = async (request: NextRequest) => {
     const { username, email, password } = reqBody;
     const user = await User.findOne({ email });
     if (user) {
-      return NextResponse.json(
-        { error: "User already exist" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "User already exist" }, { status: 400 });
     }
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(password, salt);
-    const newUser = new User({ userName:username, email, password: hashPassword });
+    const newUser = new User({ userName: username, email, password: hashPassword });
     const createdUser = await newUser.save();
     console.log("createdUser: ", createdUser);
 
     // send verification email
-    await sendEmail({
-      email,
-      emailType: Const.VERIFY,
-      userId: createdUser._id,
-    });
-    return NextResponse.json({
-      message: "User registered succesfully",
-      success: true,
-      createdUser,
-    });
+    await sendEmail({ email, emailType: Const.VERIFY, userId: createdUser._id });
+    return NextResponse.json({ message: "User registered succesfully", success: true, createdUser});
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
