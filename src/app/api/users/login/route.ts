@@ -20,7 +20,7 @@ export const POST = async (request: NextRequest) => {
         };
 
         const tokenPayload = { id: user._id, username:user.username, email: user.email} 
-        const token = await jwt.sign(tokenPayload, process.env.TOKEN_SECRET!, {expiresIn: "1d"})
+        const token = await jwt.sign(tokenPayload, process.env.TOKEN_SECRET!, {expiresIn: "1d"});
         const response = NextResponse.json({ message:"Logged In Success", success:true })
         response.cookies.set("token", token, { httpOnly:true })//only server can manipulate cookie
         return response;
