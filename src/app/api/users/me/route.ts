@@ -4,12 +4,13 @@ import { getDataFromToken } from "@/helpers/dataFromToken";
 import User from "@/models/userModel";
 connect();
 
-export const GET = async (request: NextRequest) => {
+export async function GET(request: NextRequest) {
     try {
         // extract data from token 
         const userId = await getDataFromToken(request)
-        const user = User.findOne({_id: userId}).select("-password") //"-password to avoid"
-        return NextResponse.json({ error: "User found", data: user}, { status: 200 })
+        console.log('userId: ', userId);
+        const user = await User.findOne({_id: userId}).select("-password") //"-password to avoid"
+        return NextResponse.json({ message: "User found", data: user})
     } catch (error: any) {
         NextResponse.json({ error: error.message }, { status: 500 })
     }

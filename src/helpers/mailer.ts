@@ -9,9 +9,9 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
     const hashedToken = await bcryptjs.hash(userId.toString(), 10);
 
     if (emailType === Const.VERIFY) {
-      await User.findByIdAndUpdate(userId, { verifyToken: hashedToken, verifyTokenExpiry: Date.now() + 3600000 });
+      await User.findByIdAndUpdate(userId, { $set: { verifyToken: hashedToken, verifyTokenExpiry: Date.now() + 3600000 } });
     } else if (emailType === Const.RESET) {
-      await User.findByIdAndUpdate(userId, { forgotPasswordToken: hashedToken, forgotPasswordTokenExpiry: Date.now() + 3600000 });
+      await User.findByIdAndUpdate(userId, { $set: { forgotPasswordToken: hashedToken, forgotPasswordTokenExpiry: Date.now() + 3600000 } });
     };
 
     const { NODE_MAILER_USER, NODE_MAILER_PASSWORD } = process.env;
@@ -20,7 +20,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
       port: 2525,
       auth: { user: NODE_MAILER_USER, pass: NODE_MAILER_PASSWORD },
     });
-    
+
     const mailOptions = {
       from: "ninad@yopmail.com",
       to: email,
